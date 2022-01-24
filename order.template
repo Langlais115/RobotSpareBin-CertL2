@@ -1,0 +1,9 @@
+<html>
+<head>
+
+</head>
+<body>
+{{orderData}}
+<img src="{{robotPicture}}">
+</body>
+</html>
