@@ -18,7 +18,7 @@ ${robot-preview-image}=     output/robot-preview-image.png
 ****Keywords***
 Download Order File
     ${robotSpareBin} =    Get Secret    robotSpareBin    
-    Download      url=${robotSpareBin}[CSVOrder]   force_new_session=true  overwrite=true  target_file=./DataSets/order.csv
+    Download      url=${robotSpareBin}[CSVOrder]    overwrite=true  target_file=./DataSets/order.csv
 
 
 Ask User the Report Name
@@ -90,35 +90,48 @@ Fill the Order Form
         Click Button    id:order
     END
     ${orderDetails}=     get element attribute           id:receipt    outerHTML
-    #Html To Pdf     ${receipt}  ./order-${order}[Order number].pdf
-    #Add Files To Pdf    robot-preview-image.png     ./order-${order}[Order number].pdf   append=True
   
 
 
-
-    ###
     # Create PDF files
-    ###
+    Download  https://robotsparebinindustries.com/static/css/2.9efb3193.chunk.css   overwrite=true  target_file=output/style.css
     Set Suite Variable  &{DATA}         orderData=${orderDetails}
     ...                                 robotPicture=${robot-preview-image}
+    ...                                 style=output/style.css
 
     log     ${DATA}
+  
     
     Template Html To Pdf    
-    ...                 order.template
+    ...                 Assets/order.template
     ...                 ./output/${ordersName}-${order}[Order number].pdf
     ...                 ${DATA}
 
-    Download  https://robotsparebinindustries.com/static/css/2.9efb3193.chunk.css
+    
     #sleep           3
     Click Button    order-another
 
 
+
+#####
+# Compress all PDF order files in a zip file
+#####
 Compress Order Files
     [Arguments]      ${ordersName}
     Archive Folder With Zip    ./output/     ./output/${ordersName}.zip  include=${ordersName}*.pdf
 
-
+#####
+# Cleanup after the robot. Romove the order file and all files created during the execution
+# exept the zip file containning all PDF
+#####
 Delete Order File and Close Browser
-    Remove File     ./DataSets/order.csv
+    ${PDFFiles}=    Find Files  output/*.pdf
+
+    Remove File     DataSets/order.csv
+    Remove File     output/robot-preview-image.png
+    Remove File     output/style.css
+    FOR  ${PDFFile}  IN   @{PDFFiles}
+       Remove File    ${PDFFile}
+       log  ${PDFFile}
+    END
     Close Browser
