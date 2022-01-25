@@ -5,7 +5,7 @@ Library     RPA.Dialogs
 Library     RPA.FileSystem
 Library     RPA.HTTP
 Library     RPA.PDF
-Library     RPA.Robocloud.Secrets    #RPA.Robocorp.Vault
+Library     RPA.Robocorp.Vault
 Library     RPA.Tables
 
 
