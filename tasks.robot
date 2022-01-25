@@ -19,7 +19,7 @@ Resource            KeywordsLibrary/RobotBinHTTP.robot
 
 *** Tasks ***
 Create Orders from Online CSV file
-    ${ordersName}=   set variable            Commande  #Ask User the Report Name
+    ${ordersName}=   Ask User the Report Name
     Download Order File
     Open The Order System in a Web Browser
     ${ordersTable}=     Read Order File
